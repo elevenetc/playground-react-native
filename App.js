@@ -81,13 +81,13 @@ export default class App extends Component<{}> {
                                     if (node.ordered) {
                                         bullet = createElement(Text, {
                                             key: state.key,
-                                            style: styles.listItemText
+                                            //style: styles.listItemText
                                         }, (i + 1) + '. ' + content);
                                     }
                                     else {
                                         bullet = createElement(Text, {
                                             key: state.key,
-                                            style: styles.listItemText
+                                            //style: styles.listItemText
                                         }, ('• ' + content));
                                     }
 
@@ -95,13 +95,13 @@ export default class App extends Component<{}> {
 
                                     return createElement(View, {
                                         key: i,
-                                        style: styles.listItemText
+                                        //style: styles.listItemText
                                     }, bullet)
                                 });
 
                                 return createElement(View, {
                                     key: state.key,
-                                    style: styles.listItemText
+                                    //style: styles.listItemText
                                 }, items)
                             }
                         }
@@ -138,27 +138,6 @@ function getContent(item) {
     }
     return result;
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-        backgroundColor: '#ff7c8b'
-    },
-});
-
 
 const markdownStyles = {
     text: {
