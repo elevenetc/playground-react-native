@@ -5,7 +5,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 import Markdown from "react-native-simple-markdown";
 import {createElement} from "react/cjs/react.production.min";
 import _ from 'lodash'
@@ -22,6 +22,8 @@ let imgSource = {uri: "https://upload.wikimedia.org/wikipedia/commons/d/de/Banan
 let inputText = "empty";
 const Strong = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 let t = 'FFF<Strong>ZZZ</Strong>FFF';
+const textColor = '#222222';
+const headColor = '#27abe3';
 
 export default class App extends Component<{}> {
 
@@ -50,7 +52,7 @@ export default class App extends Component<{}> {
             '### Link to phone number\n' +
             '[Manager](tel:666)\n' +
             '### Bullet list\n' +
-            '- item ab\n' +
+            '- item ab. Long item text. Long item text. Long item text. Long item text. Long item text.\n' +
             '- item bb\n' +
             '- item cb\n' +
             '### Numbered list\n' +
@@ -69,25 +71,28 @@ export default class App extends Component<{}> {
         // );
 
         return (
-            <View style={{padding:5}}>
+            <View style={{padding: 5}}>
                 <Markdown
                     styles={markdownStyles}
                     rules={{
                         list: {
                             react: (node, output, state) => {
+
+                                const style = {color: textColor};
+
                                 const items = _.map(node.items, (item, i) => {
                                     let bullet;
                                     let content = getContent(item);
                                     if (node.ordered) {
                                         bullet = createElement(Text, {
                                             key: state.key,
-                                            //style: styles.listItemText
+                                            style: style
                                         }, (i + 1) + '. ' + content);
                                     }
                                     else {
                                         bullet = createElement(Text, {
                                             key: state.key,
-                                            //style: styles.listItemText
+                                            style: style
                                         }, ('• ' + content));
                                     }
 
@@ -95,13 +100,13 @@ export default class App extends Component<{}> {
 
                                     return createElement(View, {
                                         key: i,
-                                        //style: styles.listItemText
+                                        style: style
                                     }, bullet)
                                 });
 
                                 return createElement(View, {
                                     key: state.key,
-                                    //style: styles.listItemText
+                                    style: style
                                 }, items)
                             }
                         }
@@ -113,20 +118,22 @@ export default class App extends Component<{}> {
 }
 
 function getContent(item) {
-    var result = null;
-    var maxDeep = 15;
-    while (result == null) {
+    var result = '';
+    var maxDepth = 15;
+    while (maxDepth > 0) {
 
         console.log('check item:' + JSON.stringify(item));
 
-        maxDeep--;
-        if (maxDeep === 0) {
+        maxDepth--;
+        if (maxDepth === 0) {
             result = 'error list item parsing';
             break;
         }
 
         if (item instanceof Array) {
-            item = item[0];
+            for (let itm of item)
+                result += getContent(itm);
+            break;
         } else {
             if (item.type === 'text') {
                 result = item.content;
@@ -141,16 +148,27 @@ function getContent(item) {
 
 const markdownStyles = {
     text: {
-        color: '#000000'
+        //must be empty, otherwise it overrides other styles
     },
     heading: {
         fontWeight: 'bold',
-        color: '#ffffff',
-        textColor: '#ff7c8b',
+        color: headColor,
         fontSize: 18
     },
-    listItemText:{
-        color:'#ffffff',
-        backgroundColor: '#ff7c8b'
+    listItemText: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        color: textColor
+    },
+    paragraph: {
+        marginTop: 10,
+        marginBottom: 10,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        color: textColor
     }
 };
